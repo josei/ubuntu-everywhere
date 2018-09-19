@@ -11,6 +11,19 @@ RUN apt install -y patch bzip2 gawk g++ gcc make libc6-dev patch zlib1g-dev liby
 RUN apt install -y texlive-full lilypond abcm2ps abcmidi
 RUN add-apt-repository -y ppa:ethereum/ethereum && apt update && apt install -y ethereum solc
 
+RUN echo "deb http://pkg.scaleft.com/deb linux main" | tee -a /etc/apt/sources.list
+RUN curl -C - https://dist.scaleft.com/pki/scaleft_deb_key.asc | apt-key add -
+RUN apt update
+RUN apt install -y scaleft-client-tools
+RUN ln -s /usr/bin/sft /usr/local/bin/sft
+RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk-xenial main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+RUN apt update && apt install -y google-cloud-sdk
+RUN apt install -y kubectl
+RUN curl https://raw.githubusercontent.com/ahmetb/kubectx/master/kubectx -o /usr/local/bin/kubectx
+RUN chmod +x /usr/local/bin/kubectx
+RUN apt install -y sshuttle
+
 RUN useradd --create-home -s /bin/bash ${USER} && passwd -d ${USER} && adduser ${USER} sudo && adduser ${USER} docker && echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 WORKDIR /home/${USER}
 USER ${USER}
